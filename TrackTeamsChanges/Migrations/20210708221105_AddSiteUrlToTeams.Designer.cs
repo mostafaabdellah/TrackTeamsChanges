@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrackTeamsChanges;
 
 namespace TrackTeamsChanges.Migrations
 {
     [DbContext(typeof(DbContext))]
-    partial class DbContextModelSnapshot : ModelSnapshot
+    [Migration("20210708221105_AddSiteUrlToTeams")]
+    partial class AddSiteUrlToTeams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +35,10 @@ namespace TrackTeamsChanges.Migrations
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DriveId")
+                    b.Property<string>("ListId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SiteId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SiteUrl")

@@ -36,31 +36,47 @@ namespace TrackTeamsChanges.Services
         }
         private static void AddTeamsToTable(IGraphServiceGroupsCollectionPage teams)
         {
-            var options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = 1//Environment.ProcessorCount
-            };
-            Parallel.ForEach(teams, options, async team =>
-            {
-                await AddTeamToTable(team);
-            });
-        }
+        //    var options = new ParallelOptions()
+        //    {
+        //        MaxDegreeOfParallelism = Environment.ProcessorCount
+        //    };
+        //    Parallel.ForEach(teams, options, async team =>
+        //    {
+        //        await AddTeamToTable(team);
+        //    });
+            foreach (var team in teams)
+                AddTeamToTable(team).Wait();
+
+    }
         private static async Task AddTeamToTable(Group team)
         {
             try
             {
-                var teamSite = await graphClient.Groups[team.Id].Drive
+                var teamSite = await graphClient.Groups[team.Id].Drive.Root
                                         .Request()
-                                        .Select("CreatedDateTime,Root,SharepointIds,WebUrl")
+                                        .Select("ParentReference,CreatedDateTime,WebUrl")
                                         .GetAsync();
                 var teams = new List<Teams>();
+                var driveId = teamSite.ParentReference.DriveId;
+                var subscription= graphClient.Subscriptions.Request().AddAsync(new Subscription
+                {
+                    Resource=$"/drives/{driveId}/root",
+                    ChangeType="updated",
+                    ExpirationDateTime= DateTime.UtcNow + new TimeSpan(0, 0, 4200, 0),
+                    NotificationUrl= "https://40a818a4b0e0.ngrok.io/api/spwebhook/handlerequest"
+                }).Result;
                 teams.Add(new Teams()
                 {
                     TeamId = team.Id,
-                    DisplayName=team.DisplayName,
-                    CreatedOn= team.CreatedDateTime.Value.UtcDateTime
+                    DisplayName= team.DisplayName,
+                    CreatedOn= team.CreatedDateTime.Value.UtcDateTime,
+                    DriveId= driveId,
+                    SiteUrl= teamSite.WebUrl,
+                    SubscriptionId=subscription.Id,
+                    SubscriptionExpirationDate=subscription.ExpirationDateTime.Value.UtcDateTime
                 });
-                //await DbOperations.AddTeamsToTable(teams);
+                Console.WriteLine($"subscription {subscription.Id} add to {teamSite.WebUrl}");
+                await DbOperations.AddTeamsToTable(teams);
             }
             catch (Exception e){
                 Console.WriteLine(e.Message);
