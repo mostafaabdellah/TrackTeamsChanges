@@ -13,7 +13,7 @@ namespace TrackTeamsChanges.Authentication
     public class DeviceCodeAuthProvider : IAuthenticationProvider
     {
         private IConfidentialClientApplication _msalClient;
-        private string _token;
+        //private string _token;
         private AuthenticationConfig config;
 
         public DeviceCodeAuthProvider()

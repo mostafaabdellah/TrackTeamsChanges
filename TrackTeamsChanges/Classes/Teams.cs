@@ -16,5 +16,7 @@ namespace TrackTeamsChanges
         public string DeltaToken { get; set; }
         public string DisplayName { get; internal set; }
         public string SiteUrl { get; internal set; }
+        public string SiteId { get; internal set; }
+        public string ListId { get; internal set; }
     }
 }
