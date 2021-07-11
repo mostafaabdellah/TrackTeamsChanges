@@ -99,5 +99,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DatabaseLayer\DatabaseLayer.csproj">
+      <Project>{5f6c8662-33ba-4840-b457-f535e0b65293}</Project>
+      <Name>DatabaseLayer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

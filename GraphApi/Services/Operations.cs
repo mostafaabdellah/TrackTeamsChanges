@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TrackTeamsChanges.Authentication;
+using GraphApi.Authentication;
+using TrackTeamsChanges;
 
-namespace TrackTeamsChanges.Services
+namespace GraphApi.Services
 {
     public static class Operations
     {

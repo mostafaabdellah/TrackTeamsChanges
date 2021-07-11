@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,27 +8,27 @@ namespace TrackTeamsChanges
 {
     public class DbOperations
     {
-        public static async Task AddTeamsToTable(IList<Teams> teams)
+        public static void AddTeamsToTable(IList<Teams> teams)
         {
-            using (var context = new DbContext())
+            using (var context = new DbCtxt())
             {
                 context.Teams.AddRange(teams);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
             }
         }
         public static IList<Teams> GetTeams(int limit)
         {
-            using (var context = new DbContext())
+            using (var context = new DbCtxt())
             {
                 return context.Teams.OrderBy(o => o.CreatedOn).Take(limit).ToList();
             }
         }
-        
-        internal static async Task ClearTeamsTable()
+
+        internal static void ClearTeamsTable()
         {
-            using (var context = new DbContext())
+            using (var context = new DbCtxt())
             {
-                await context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE Teams");
+                context.Database.ExecuteSqlCommand("TRUNCATE TABLE Teams");
             }
         }
     }

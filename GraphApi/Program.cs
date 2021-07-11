@@ -1,17 +1,18 @@
-﻿using System;
+﻿using GraphApi.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestApi
+namespace GraphApi
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Operations.CreateSubscriptions(1);
-            Console.ReadLine();
+            Console.WriteLine("Start!");
+            Operations.UpdateTeamsTable().Wait();
         }
     }
 }
