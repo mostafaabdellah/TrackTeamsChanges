@@ -92,7 +92,7 @@ namespace GraphApi.Services
                 });
                 //Console.WriteLine($"{teamSite.WebUrl} Added - subscription.Id {subscription.Id}");
                 Console.WriteLine($"{teamSite.WebUrl} Added");
-                DbOperations.AddTeamsToTable(teams);
+                DbOperations.AddTeams(teams);
             }
             catch (Exception e){
                 Console.WriteLine(e.Message);

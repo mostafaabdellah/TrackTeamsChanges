@@ -40,6 +40,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -54,6 +57,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\SPWebhookContent.cs" />
+    <Compile Include="Classes\SPWebhookNotification.cs" />
+    <Compile Include="Classes\SubscriptionPost.cs" />
+    <Compile Include="Classes\Subscription.cs" />
     <Compile Include="Classes\Teams.cs" />
     <Compile Include="Database\DbContext.cs" />
     <Compile Include="Database\DbOperations.cs" />
@@ -64,6 +71,10 @@
     <Compile Include="Migrations\202107111742391_ChangeTeamsSchema1.2.cs" />
     <Compile Include="Migrations\202107111742391_ChangeTeamsSchema1.2.designer.cs">
       <DependentUpon>202107111742391_ChangeTeamsSchema1.2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107120330564_changeSchema1.cs" />
+    <Compile Include="Migrations\202107120330564_changeSchema1.designer.cs">
+      <DependentUpon>202107120330564_changeSchema1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,6 +89,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107111742391_ChangeTeamsSchema1.2.resx">
       <DependentUpon>202107111742391_ChangeTeamsSchema1.2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107120330564_changeSchema1.resx">
+      <DependentUpon>202107120330564_changeSchema1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

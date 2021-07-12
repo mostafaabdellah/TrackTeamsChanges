@@ -1,4 +1,6 @@
 ﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,20 +39,61 @@ namespace RestApi
                 .ForEach(t => { CreateSubscriptionAsync(t).Wait(); });
 
         }
-
         private static async Task CreateSubscriptionAsync(Teams team)
         {
             string accessToken = GetTokenAsync().Result;
-            var url = "https://devx9.sharepoint.com/_api/web/lists";
+            var siteUrl = team.SiteUrl.Replace("Shared%20Documents", "");
+            var url = $"{siteUrl}_api/web/lists('{team.ListId}')/subscriptions";
+            var payload = "";
+            SubscriptionPost post = new SubscriptionPost()
+            {
+                Resource = $"{siteUrl}_api/web/lists('{team.ListId}')",
+                NotificationUrl= "https://0284f0573ffb.ngrok.io/api/spwebhook/handlerequest"
+            };
+            payload = JsonConvert.SerializeObject(post, new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                },
+                Formatting = Formatting.Indented
+            });
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            //setup the client get
-            HttpResponseMessage result = await client.GetAsync(url);
+            HttpContent content = new StringContent(payload, Encoding.UTF8, "application/json");
+            HttpResponseMessage result = await client.PostAsync(url, content);
+            var resultContent = result.Content.ReadAsStringAsync().Result;
             if (result.IsSuccessStatusCode)
             {
-                Console.WriteLine("Email sent successfully. ");
+                var subscription = JsonConvert.DeserializeObject<Subscription>(resultContent);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Subscription {subscription.SubscriptionId} Added to {siteUrl}");
+                subscription.TeamId = team.TeamId;
+                DbOperations.AddSubscriptions(subscription);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(resultContent);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+
+        }
+        private static void TestGet()
+        {
+            string accessToken = GetTokenAsync().Result;
+            var url = "https://mmoustafa.sharepoint.com/_api/web/lists";
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            //setup the client get
+            HttpResponseMessage result = client.GetAsync(url).Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var resultContent = result.Content.ReadAsStringAsync().Result;
+                var obj=JsonConvert.DeserializeObject(resultContent);
+                Console.WriteLine(obj.ToString());
             }
 
             //HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
