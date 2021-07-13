@@ -19,4 +19,5 @@ public class SPWebhookNotification
 
     public string WebId { get; set; }
     public DateTime NotificationDate { get; set; }
+    public string Content { get; set; }
 }

@@ -23,14 +23,9 @@ namespace RestApi
         {
             string settingJson = String.Format("{0}\\setting.json", AppDomain.CurrentDomain.BaseDirectory);
             AzureAdSetting setting = AzureAdSetting.CreateInstance(settingJson);
-
-            //if you need to load from certficate store, use different constructors. 
             X509Certificate2 certificate = new X509Certificate2(setting.CertficatePath, setting.CertificatePassword, X509KeyStorageFlags.MachineKeySet);
             AuthenticationContext authenticationContext = new AuthenticationContext(setting.Authority, false);
-
             ClientAssertionCertificate cac = new ClientAssertionCertificate(setting.ClientId, certificate);
-
-            //get the access token to Outlook using the ClientAssertionCertificate
             var authenticationResult = await authenticationContext.AcquireTokenAsync(setting.ResourceId, cac);
             return authenticationResult.AccessToken;
 
@@ -120,6 +115,13 @@ namespace RestApi
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(resultContent);
                 Console.ForegroundColor = ConsoleColor.Gray;
+                //if (resultContent.Contains("Access token has expired") 
+                //    || resultContent.Contains("temporary issue, so try again in a few minutes"))
+                {
+                    Console.WriteLine("Renew Tokean");
+                    AccessToken = GetTokenAsync().Result;
+                    await CreateSubscriptionAsync(team);
+                }
             }
 
         }
@@ -142,13 +144,17 @@ namespace RestApi
             }
             else
             {
-                AccessToken = GetTokenAsync().Result;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(resultContent);
                 Console.ForegroundColor = ConsoleColor.Gray;
+                //if (resultContent.Contains("Access token has expired"))
+                {
+                    Console.WriteLine("Renew Tokean");
+                    AccessToken = GetTokenAsync().Result;
+                    await GetSubscriptionsAsync(team);
+                }
                 return null;
             }
-
         }
 
         private static async Task<bool> DeleteSubscriptionAsync(Subscription subscription, Teams team)
@@ -167,7 +173,12 @@ namespace RestApi
             }
             else
             {
-                AccessToken = GetTokenAsync().Result;
+                //if (resultContent.Contains("Access token has expired"))
+                {
+                    Console.WriteLine("Renew Tokean");
+                    AccessToken = GetTokenAsync().Result;
+                    await DeleteSubscriptionAsync(subscription,team);
+                }
                 return false;
             }
         }

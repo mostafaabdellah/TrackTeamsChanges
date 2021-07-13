@@ -11,9 +11,6 @@ namespace TrackTeamsChanges
         public string TeamId { get; set; }
         public DateTime? CreatedOn { get; set; }
         public string DriveId { get; set; }
-        public string SubscriptionId { get; set; }
-        public DateTime? SubscriptionExpirationDate { get; set; }
-        public string DeltaToken { get; set; }
         public string DisplayName { get; set; }
         public string SiteUrl { get; set; }
         public string SiteId { get; set; }

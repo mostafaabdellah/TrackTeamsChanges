@@ -63,11 +63,36 @@ namespace TrackTeamsChanges
                 context.SaveChanges();
             }
         }
-        public static void AddNotifications(SPWebhookNotification notifications)
+        public static void AddNotifications(SPWebhookNotification notification)
         {
             using (var context = new DbCtxt())
             {
-                context.SPWebhookNotifications.Add(notifications);
+                context.SPWebhookNotifications.Add(notification);
+                var subscription = context.Subscriptions
+                    .Where(w => w.SubscriptionId == notification.SubscriptionId)
+                    .FirstOrDefault();
+                if (subscription != null)
+                {
+                    var change = context.Changes
+                        .Where(w => w.TeamId == subscription.TeamId)
+                        .OrderByDescending(o=>o.Iteration)
+                        .FirstOrDefault();
+                    if(change!=null)
+                    {
+                        if(notification.Resource.Contains("drives"))
+                        {
+                            change.GraphSubscriptionId = notification.SubscriptionId;
+                            change.GraphNotificationOn = DateTime.UtcNow;
+                            change.GraphLatency = (int)(DateTime.UtcNow - change.CreatedOn).TotalSeconds;
+                        }
+                        else
+                        {
+                            change.RestSubscriptionId = notification.SubscriptionId;
+                            change.RestNotificationOn = DateTime.UtcNow;
+                            change.RestLatency = (int)(DateTime.UtcNow - change.CreatedOn).TotalSeconds;
+                        }
+                    }
+                }
                 context.SaveChanges();
             }
         }
@@ -96,6 +121,17 @@ namespace TrackTeamsChanges
                     return;
                     context.Subscriptions.Remove(sub);
                     context.SaveChanges();
+            }
+        }
+        public static void DeleteSubscription(string SubscriptionId)
+        {
+            using (var context = new DbCtxt())
+            {
+                var sub = context.Subscriptions.Where(w => w.SubscriptionId == SubscriptionId).FirstOrDefault();
+                if (sub == null)
+                    return;
+                context.Subscriptions.Remove(sub);
+                context.SaveChanges();
             }
         }
     }

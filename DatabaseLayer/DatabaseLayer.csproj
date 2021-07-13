@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Change.cs" />
     <Compile Include="Classes\SPWebhookContent.cs" />
     <Compile Include="Classes\SPWebhookNotification.cs" />
     <Compile Include="Classes\SubscriptionPost.cs" />
@@ -76,6 +77,26 @@
     <Compile Include="Migrations\202107120330564_changeSchema1.designer.cs">
       <DependentUpon>202107120330564_changeSchema1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107131546345_changeSchema11.cs" />
+    <Compile Include="Migrations\202107131546345_changeSchema11.designer.cs">
+      <DependentUpon>202107131546345_changeSchema11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107131908191_changeSchema2.cs" />
+    <Compile Include="Migrations\202107131908191_changeSchema2.designer.cs">
+      <DependentUpon>202107131908191_changeSchema2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107131915163_changeSchema21.cs" />
+    <Compile Include="Migrations\202107131915163_changeSchema21.designer.cs">
+      <DependentUpon>202107131915163_changeSchema21.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107131937574_changeSchema3.cs" />
+    <Compile Include="Migrations\202107131937574_changeSchema3.designer.cs">
+      <DependentUpon>202107131937574_changeSchema3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107131949176_changeSchema3.1.cs" />
+    <Compile Include="Migrations\202107131949176_changeSchema3.1.designer.cs">
+      <DependentUpon>202107131949176_changeSchema3.1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -92,6 +113,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107120330564_changeSchema1.resx">
       <DependentUpon>202107120330564_changeSchema1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107131546345_changeSchema11.resx">
+      <DependentUpon>202107131546345_changeSchema11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107131908191_changeSchema2.resx">
+      <DependentUpon>202107131908191_changeSchema2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107131915163_changeSchema21.resx">
+      <DependentUpon>202107131915163_changeSchema21.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107131937574_changeSchema3.resx">
+      <DependentUpon>202107131937574_changeSchema3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107131949176_changeSchema3.1.resx">
+      <DependentUpon>202107131949176_changeSchema3.1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

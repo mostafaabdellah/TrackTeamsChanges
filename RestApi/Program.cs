@@ -10,7 +10,9 @@ namespace RestApi
     {
         static void Main(string[] args)
         {
-            Operations.DeleteSubscriptions(7000);
+            Operations.CreateSubscriptions(6666);
+            //Operations.DeleteSubscriptions(6666);
+            Console.WriteLine("Job Completed Exit!");
             Console.ReadLine();
         }
     }

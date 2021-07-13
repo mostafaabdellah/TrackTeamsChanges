@@ -62,6 +62,44 @@ namespace GraphApi.Services
             }
 
         }
+        public static async Task DeleteSubscriptions()
+        {
+            var subscriptions = await graphClient.Subscriptions
+                .Request()
+                .GetAsync();
+
+            var filtered = subscriptions.CurrentPage.Where(w =>
+                        w.ClientState == ClientState);
+
+            DeleteSubscriptions(filtered);
+
+
+            while (subscriptions.AdditionalData.ContainsKey("@odata.nextLink")
+                    && subscriptions.AdditionalData["@odata.nextLink"] != null)
+            {
+                var nextLink = subscriptions.AdditionalData["@odata.nextLink"].ToString();
+                subscriptions.InitializeNextPageRequest(graphClient, nextLink);
+                subscriptions = await subscriptions.NextPageRequest
+                    .GetAsync();
+
+                filtered = subscriptions.CurrentPage.Where(w =>
+                        w.ClientState == ClientState);
+
+                DeleteSubscriptions(filtered);
+            }
+
+        }
+
+        private static void DeleteSubscriptions(IEnumerable<Microsoft.Graph.Subscription> Subscriptions)
+        {
+            Subscriptions.ToList().ForEach(subscription => {
+                var response=graphClient.Subscriptions[subscription.Id]
+                .Request()
+                .DeleteAsync();
+                DbOperations.DeleteSubscription(subscription.Id);
+            });
+        }
+
         private static void AddTeamsToTable(IEnumerable<Group> teams)
         {
             //var options = new ParallelOptions()
