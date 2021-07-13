@@ -11,12 +11,10 @@ using System.Web.Http;
 using System.Web.Http.Tracing;
 using TrackTeamsChanges;
 using WebhookReceiver.Models;
-
 namespace WebhookReceiver.Controllers
 {
-    public class SPWebhookController : ApiController
+    public class GraphWebhookController : ApiController
     {
-
         [HttpPost]
         public HttpResponseMessage HandleRequest()
         {
@@ -25,28 +23,17 @@ namespace WebhookReceiver.Controllers
             string validationToken = string.Empty;
             IEnumerable<string> clientStateHeader = new List<string>();
             string webhookClientState = ConfigurationManager.AppSettings["webhookclientstate"].ToString();
-            Request.Headers.TryGetValues("clientState", out clientStateHeader);
-            if (!Request.Headers.TryGetValues("ClientState", out clientStateHeader))
-                return httpResponse;
-
-            string clientStateHeaderValue = clientStateHeader.FirstOrDefault() ?? string.Empty;
-
-            if (string.IsNullOrEmpty(clientStateHeaderValue) || !clientStateHeaderValue.Equals(webhookClientState))
-            {
-                httpResponse = new HttpResponseMessage(HttpStatusCode.Forbidden);
-                return httpResponse;
-            }
             var queryStringParams = HttpUtility.ParseQueryString(Request.RequestUri.Query);
 
-            if (queryStringParams.AllKeys.Contains("validationtoken"))
+            if (queryStringParams.AllKeys.Contains("validationToken"))
             {
                 httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
-                validationToken = queryStringParams.GetValues("validationtoken")[0].ToString();
+                validationToken = queryStringParams.GetValues("validationToken")[0].ToString();
                 httpResponse.Content = new StringContent(validationToken);
                 return httpResponse;
             }
-            var requestContent = Request.Content.ReadAsStringAsync().Result;
 
+            var requestContent = Request.Content.ReadAsStringAsync().Result;
             if (string.IsNullOrEmpty(requestContent))
                 return httpResponse;
 
@@ -73,6 +60,7 @@ namespace WebhookReceiver.Controllers
                     string.Format("JSON deserialization error: {0}", ex.InnerException));
                 return httpResponse;
             }
+
         }
 
         [HttpGet]
@@ -83,5 +71,6 @@ namespace WebhookReceiver.Controllers
                 Content = new StringContent("Live")
             };
         }
+
     }
 }

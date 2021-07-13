@@ -6,4 +6,8 @@ namespace WebhookReceiver.Models
     {
         public List<SPWebhookNotification> Value { get; set; }
     }
+    public class ContentSubscriptions
+    {
+        public List<Subscription> Value { get; set; }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 using RestApi;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,6 +73,18 @@ namespace TrackTeamsChanges
             using (var context = new DbCtxt())
             {
                 context.Database.ExecuteSqlCommand("TRUNCATE TABLE Teams");
+            }
+        }
+
+        public static void DeleteSubscription(Subscription subscription)
+        {
+            using (var context = new DbCtxt())
+            {
+                var sub = context.Subscriptions.Where(w => w.SubscriptionId == subscription.SubscriptionId).FirstOrDefault();
+                if (sub == null)
+                    return;
+                    context.Subscriptions.Remove(sub);
+                    context.SaveChanges();
             }
         }
     }
