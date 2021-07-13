@@ -6,13 +6,30 @@ using System.Text;
 using System.Threading.Tasks;
 using GraphApi.Authentication;
 using TrackTeamsChanges;
+using RestApi;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace GraphApi.Services
 {
     public static class Operations
     {
+        private const string ClientState = "A0A354EC-97D4-4D83-9DDB-144077ADB449";
+        private static string AccessToken = string.Empty;
+        private const string NotificationUrl = "https://0284f0573ffb.ngrok.io/api/graphwebhook/handlerequest";
+
         readonly static DeviceCodeAuthProvider authProvider = new DeviceCodeAuthProvider();
         readonly static GraphServiceClient graphClient = new GraphServiceClient(authProvider);
+        public static void CreateSubscriptions(int count)
+        {
+            AccessToken = authProvider.GetAccessToken().Result;
+            DbOperations.GetTeams(count)
+                .ToList().ForEach(team => {
+                    CreateSubscriptionAsync(team).Wait();
+                });
+        }
+
         
         public static async Task UpdateTeamsTable()
         {
@@ -45,7 +62,6 @@ namespace GraphApi.Services
             }
 
         }
-
         private static void AddTeamsToTable(IEnumerable<Group> teams)
         {
             //var options = new ParallelOptions()
@@ -70,33 +86,113 @@ namespace GraphApi.Services
                                         .Select("SharepointIds,ParentReference,CreatedDateTime,WebUrl")
                                         .GetAsync();
                 var teams = new List<Teams>();
-                //var driveId = teamSite.ParentReference.DriveId;
-                //var subscription = graphClient.Subscriptions.Request().AddAsync(new Subscription
-                //{
-                //    Resource = $"/drives/{driveId}/root",
-                //    ChangeType = "updated",
-                //    ExpirationDateTime = DateTime.UtcNow + new TimeSpan(0, 0, 4200, 0),
-                //    NotificationUrl = "https://d8a4b80a98a5.ngrok.io/api/spwebhook/handlerequest"
-                //}).Result;
                 teams.Add(new Teams()
                 {
                     TeamId = team.Id,
                     DisplayName= team.DisplayName,
                     CreatedOn= team.CreatedDateTime.Value.UtcDateTime,
-                    //DriveId= driveId,
-                    SiteUrl= teamSite.WebUrl,
+                    DriveId= teamSite.ParentReference.DriveId,
+                    SiteUrl = teamSite.WebUrl,
                     SiteId=teamSite.SharepointIds.SiteId,
                     ListId = teamSite.SharepointIds.ListId,
-                    //SubscriptionId =subscription.Id,
-                    //SubscriptionExpirationDate=subscription.ExpirationDateTime.Value.UtcDateTime
+
                 });
-                //Console.WriteLine($"{teamSite.WebUrl} Added - subscription.Id {subscription.Id}");
                 Console.WriteLine($"{teamSite.WebUrl} Added");
                 DbOperations.AddTeams(teams);
             }
             catch (Exception e){
                 Console.WriteLine(e.Message);
             }
+        }
+        private static void CreateSubscription(Teams team)
+        {
+            try
+            {
+                DateTime dateTime = DateTime.UtcNow + new TimeSpan(0, 0, 4200, 0);
+                var subscription = graphClient.Subscriptions.Request().AddAsync(new Microsoft.Graph.Subscription
+                {
+                    Resource = $"/drives/{team.DriveId}/root",
+                    ChangeType = "updated",
+                    ExpirationDateTime = dateTime.ToUniversalTime(),
+                    NotificationUrl = NotificationUrl
+                }).Result;
+
+                Console.WriteLine($"{team.SiteUrl} Added - subscription.Id {subscription.Id}");
+                DbOperations.AddSubscriptions(new Subscription() { 
+                    ClientState=subscription.ClientState,
+                    ExpirationDateTime=subscription.ExpirationDateTime.Value.UtcDateTime.ToString(),
+                    SubscriptionId=subscription.Id,
+                    Resource=subscription.Resource,
+                    TeamId=team.TeamId,
+                    NotificationUrl=subscription.NotificationUrl,
+                    Type=subscription.ChangeType,
+                    Oid=subscription.ApplicationId,
+                    EditLink=team.SiteUrl
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+        private static async Task CreateSubscriptionAsync(Teams team)
+        {
+            if (DbOperations.IsSubscriptionCreatedForTeam(team.TeamId))
+                return;
+            var url = "https://graph.microsoft.com/beta/subscriptions";
+            SubscriptionPostGraph post = new SubscriptionPostGraph()
+            {
+                Resource = $"/drives/{team.DriveId}/root",
+                NotificationUrl = NotificationUrl,
+                ClientState = ClientState,
+                ExpirationDateTime="2021-08-05T11:00:00.0000000Z"
+            };
+
+            var payload = JsonConvert.SerializeObject(post, new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                },
+                Formatting = Formatting.Indented
+            });
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            HttpContent content = new StringContent(payload, Encoding.UTF8, "application/json");
+            HttpResponseMessage result = await client.PostAsync(url, content);
+            var resultContent = result.Content.ReadAsStringAsync().Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var subscription = JsonConvert.DeserializeObject<SubscriptionGraph>(resultContent);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{team.SiteUrl} Added - subscription.Id {subscription.SubscriptionId}");
+                DbOperations.AddSubscriptions(new Subscription()
+                {
+                    ClientState = subscription.ClientState,
+                    ExpirationDateTime = subscription.ExpirationDateTime,
+                    SubscriptionId = subscription.SubscriptionId,
+                    Resource = subscription.Resource,
+                    TeamId = team.TeamId,
+                    NotificationUrl = subscription.NotificationUrl,
+                    Type = subscription.ChangeType,
+                    Oid = subscription.ApplicationId,
+                    EditLink=team.SiteUrl
+                });
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(resultContent);
+                Console.ForegroundColor = ConsoleColor.Gray;
+                if (resultContent.Contains("Access token has expired"))
+                {
+                    AccessToken = authProvider.GetAccessToken().Result;
+                    await CreateSubscriptionAsync(team);
+                    Console.WriteLine("retry successed");
+                }
+            }
+
         }
     }
 }

@@ -44,6 +44,17 @@ namespace TrackTeamsChanges
                 context.SaveChanges();
             }
         }
+        public static bool IsSubscriptionCreatedForTeam(string teamId)
+        {
+            using (var context = new DbCtxt())
+            {
+                var sub = context.Subscriptions.Where(w => w.TeamId == teamId).FirstOrDefault();
+                if (sub == null)
+                    return false;
+                else
+                    return true;
+            }
+        }
         public static void AddNotifications(IList<SPWebhookNotification> notifications)
         {
             using (var context = new DbCtxt())

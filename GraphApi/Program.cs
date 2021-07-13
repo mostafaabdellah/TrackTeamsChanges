@@ -12,7 +12,8 @@ namespace GraphApi
         static void Main(string[] args)
         {
             Console.WriteLine("Start!");
-            Operations.UpdateTeamsTable().Wait();
+            //Operations.UpdateTeamsTable().Wait();
+            Operations.CreateSubscriptions(6500);
         }
     }
 }
