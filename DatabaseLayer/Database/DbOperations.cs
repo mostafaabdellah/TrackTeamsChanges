@@ -55,6 +55,21 @@ namespace TrackTeamsChanges
                     return true;
             }
         }
+
+        public static void AddChange(string teamId, int Iteration, string ChangeType)
+        {
+            using (var context = new DbCtxt())
+            {
+                context.Changes.Add(new Change()
+                {
+                    TeamId=teamId,
+                    Iteration=Iteration,
+                    ChangeType=ChangeType,
+                    CreatedOn=DateTime.UtcNow
+                });
+                context.SaveChanges();
+            }
+        }
         public static void AddNotifications(IList<SPWebhookNotification> notifications)
         {
             using (var context = new DbCtxt())

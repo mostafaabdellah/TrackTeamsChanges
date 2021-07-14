@@ -10,6 +10,8 @@ using RestApi;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.IO;
+using System.Threading;
 
 namespace GraphApi.Services
 {
@@ -29,8 +31,147 @@ namespace GraphApi.Services
                     CreateSubscriptionAsync(team).Wait();
                 });
         }
+        public static void DeleteDriveContent(int count)
+        {
+            var counter = 4000;
+            var options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+            var teams = DbOperations.GetTeams(count)
+                .Skip(counter).Take(2005).ToList();
+            Parallel.ForEach(teams, options, team =>
+            {
+                DeleteDriveContentAsync(team).Wait();
+                Console.WriteLine(counter++);
+            });
+        }
+        public static void CreateGeneralFolder(int count)
+        {
+            var options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+            var teams = DbOperations.GetTeams(count)
+                .ToList();
 
+            Parallel.ForEach(teams, options, team =>
+            //teams.ForEach(team=>
+            {
+                bool result = CreateFolderAsync(team, "General").Result;
+                if (result)
+                {
+                    DbOperations.AddChange(team.TeamId, 1, "FolderCreated");
+                    Console.WriteLine($"{team.SiteUrl} General Folder Created");
+                }
+            });
+        }
+        public static void UploadFileToGeneralFolder(int count)
+        {
+            var options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+            var teams = DbOperations.GetTeams(count)
+                .ToList();
+            Parallel.ForEach(teams, options, team =>
+            {
+                UploadSmallFile(team, "/General/test.txt","Test Document").Wait();
+                DbOperations.AddChange(team.TeamId, 2, "FileUploaded");
+            });
+        }
+        public static void UpdateFileToGeneralFolder(int count)
+        {
+            var options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+            var teams = DbOperations.GetTeams(count)
+                .ToList();
+            Parallel.ForEach(teams, options, team =>
+            {
+                UploadSmallFile(team, "/General/test.txt", "Test Document1").Wait();
+                DbOperations.AddChange(team.TeamId, 3, "FileUploaded");
+            });
+        }
+        private static async Task UploadSmallFile(Teams team, string path, string fileContent)
+        {
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    var writer = new StreamWriter(stream);
+                    writer.Write(fileContent);
+                    writer.Flush();
+                    stream.Position = 0;
+
+                    var createdFile = await graphClient.Drives[team.DriveId]
+                                .Root
+                                .ItemWithPath($"{path}")
+                                .Content.Request()
+                                .PutAsync<DriveItem>(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        private static async Task<bool> CreateFolderAsync(Teams team, string FolderName)
+        {
+            var driveItem = new DriveItem
+            {
+                Name = FolderName,
+                Folder = new Folder
+                {
+
+                },
+                AdditionalData = new Dictionary<string, object>()
+                {
+                    { "@microsoft.graph.conflictBehavior", "rename"}//rename | fail | replace
+                }
+            };
+            try
+            {
+
+                var s=await graphClient.Drives[team.DriveId].Root.Children
+                    .Request()
+                    .AddAsync(driveItem);
+                return true;
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+                Thread.Sleep(10000);
+                return false;
+            }
+        }
         
+        private static async Task DeleteDriveContentAsync(Teams team)
+        {
+            try
+            {
+                var items = await graphClient.Drives[team.DriveId]
+                    .Root
+                    .Children
+                    .Request()
+                    .GetAsync();
+                foreach (var item in items)
+                {
+                    await graphClient.Drives[team.DriveId]
+                        .Items[item.Id]
+                        .Request()
+                        .DeleteAsync();
+                    //Console.WriteLine($"{item.WebUrl} - {item.Name} Deleted");
+                }
+            }catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Thread.Sleep(10000);
+            }
+        }
+
         public static async Task UpdateTeamsTable()
         {
             var teams = await graphClient.Groups

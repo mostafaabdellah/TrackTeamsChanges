@@ -13,7 +13,10 @@ namespace GraphApi
         {
             Console.WriteLine("Start!");
             //Operations.UpdateTeamsTable().Wait();
-            Operations.CreateSubscriptions(6500);
+            //Operations.DeleteDriveContent(6666);
+            Operations.CreateGeneralFolder(1000);
+            Console.WriteLine("Job Completed Exit!");
+            Console.ReadLine();
         }
     }
 }
