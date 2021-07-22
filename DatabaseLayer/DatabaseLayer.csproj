@@ -97,6 +97,10 @@
     <Compile Include="Migrations\202107131949176_changeSchema3.1.designer.cs">
       <DependentUpon>202107131949176_changeSchema3.1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107142218058_changeSchema4.cs" />
+    <Compile Include="Migrations\202107142218058_changeSchema4.designer.cs">
+      <DependentUpon>202107142218058_changeSchema4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -128,6 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107131949176_changeSchema3.1.resx">
       <DependentUpon>202107131949176_changeSchema3.1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107142218058_changeSchema4.resx">
+      <DependentUpon>202107142218058_changeSchema4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

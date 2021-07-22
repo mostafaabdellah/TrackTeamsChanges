@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphApi", "GraphApi\GraphA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhookReceiver", "WebhookReceiver\WebhookReceiver.csproj", "{19317FE7-A9DE-4BDB-8CC1-66D25A2AC9A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointApp", "SharePointApp\SharePointApp.csproj", "{457991CA-9418-4F53-94C5-6732D44B73F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointAppTokenHelper", "SharePointAppTokenHelper\SharePointAppTokenHelper.csproj", "{9A102934-35E7-4474-8C94-93ADE9F02E40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{19317FE7-A9DE-4BDB-8CC1-66D25A2AC9A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19317FE7-A9DE-4BDB-8CC1-66D25A2AC9A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19317FE7-A9DE-4BDB-8CC1-66D25A2AC9A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{457991CA-9418-4F53-94C5-6732D44B73F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{457991CA-9418-4F53-94C5-6732D44B73F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{457991CA-9418-4F53-94C5-6732D44B73F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{457991CA-9418-4F53-94C5-6732D44B73F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A102934-35E7-4474-8C94-93ADE9F02E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A102934-35E7-4474-8C94-93ADE9F02E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A102934-35E7-4474-8C94-93ADE9F02E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A102934-35E7-4474-8C94-93ADE9F02E40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

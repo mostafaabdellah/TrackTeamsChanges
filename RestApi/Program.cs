@@ -10,7 +10,8 @@ namespace RestApi
     {
         static void Main(string[] args)
         {
-            Operations.CreateSubscriptions(6666);
+            Operations.RegisterRemoteEventReceiverAsync().Wait();
+            //Operations.CreateSubscriptions(0,1);
             //Operations.DeleteSubscriptions(6666);
             Console.WriteLine("Job Completed Exit!");
             Console.ReadLine();

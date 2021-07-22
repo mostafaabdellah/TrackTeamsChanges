@@ -36,15 +36,24 @@ namespace WebhookReceiver.Controllers
             var responseContent = Request.Content.ReadAsStringAsync().Result;
             //var traceWriter = Configuration.Services.GetTraceWriter();
             //traceWriter.Trace(Request, "GraphWebhooks", TraceLevel.Info, string.Format("Notification Response={0}", responseContent));
+            Task.Factory.StartNew(() =>
+            {
+                DbOperations.AddLog(new LogInfo() 
+                {
+                    CreatedOn=DateTime.UtcNow,
+                    ResponseContent=responseContent
+                });
+            });
+
             if (string.IsNullOrEmpty(responseContent))
                 return httpResponse;
 
             try
             {
-                var objNotification = JsonConvert.DeserializeObject<SPWebhookContent>(responseContent);
-                var notifications = objNotification.Value;
                 Task.Factory.StartNew(() =>
                 {
+                    var objNotification = JsonConvert.DeserializeObject<SPWebhookContent>(responseContent);
+                    var notifications = objNotification.Value;
                     notifications.ForEach(notification =>
                     {
                         notification.NotificationDate = currentDatetime;
@@ -57,10 +66,12 @@ namespace WebhookReceiver.Controllers
             }
             catch (JsonException ex)
             {
-                var traceWriter = Configuration.Services.GetTraceWriter();
-                traceWriter.Trace(Request, "GraphWebhooks",
-                    TraceLevel.Error,
-                    string.Format("JSON deserialization error: {0}", ex.InnerException));
+                DbOperations.AddLog(new LogInfo()
+                {
+                    CreatedOn = DateTime.UtcNow,
+                    ResponseContent = responseContent,
+                    Exception= ex.InnerException.ToString()
+                });
                 return httpResponse;
             }
 

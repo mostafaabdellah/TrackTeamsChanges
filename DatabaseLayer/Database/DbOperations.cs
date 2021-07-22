@@ -44,15 +44,25 @@ namespace TrackTeamsChanges
                 context.SaveChanges();
             }
         }
-        public static bool IsSubscriptionCreatedForTeam(string teamId)
+        public static bool IsGraphSubscriptionCreatedForTeam(string teamId)
         {
             using (var context = new DbCtxt())
             {
-                var sub = context.Subscriptions.Where(w => w.TeamId == teamId).FirstOrDefault();
+                var sub = context.Subscriptions.Where(w => w.TeamId == teamId 
+                && w.Resource.Contains("drives")).FirstOrDefault();
                 if (sub == null)
                     return false;
                 else
                     return true;
+            }
+        }
+
+        public static void AddLog(LogInfo logInfo)
+        {
+            using (var context = new DbCtxt())
+            {
+                context.LogInfo.Add(logInfo);
+                context.SaveChanges();
             }
         }
 

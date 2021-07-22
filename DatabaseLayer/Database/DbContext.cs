@@ -13,6 +13,7 @@ namespace TrackTeamsChanges
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<SPWebhookNotification> SPWebhookNotifications { get; set; }
         public DbSet<Change> Changes { get; set; }
+        public DbSet<LogInfo> LogInfo { get; set; }
 
         public DbCtxt():base(@"Server=CSMM1\WIN19SQL17CI;Database=TrackTeamsChanges;Trusted_Connection=True;")
         {

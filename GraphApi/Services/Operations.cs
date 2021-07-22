@@ -23,36 +23,36 @@ namespace GraphApi.Services
 
         readonly static DeviceCodeAuthProvider authProvider = new DeviceCodeAuthProvider();
         readonly static GraphServiceClient graphClient = new GraphServiceClient(authProvider);
-        public static void CreateSubscriptions(int count)
+        readonly static ParallelOptions options = new ParallelOptions()
+        {
+            MaxDegreeOfParallelism = Environment.ProcessorCount
+        };
+        public static void CreateSubscriptions(int skip, int count)
         {
             AccessToken = authProvider.GetAccessToken().Result;
-            DbOperations.GetTeams(count)
-                .ToList().ForEach(team => {
+            var teams=DbOperations.GetTeams(count + skip).Skip(skip).Take(count)
+                .ToList();
+            //teams.ForEach(team => {
+            Parallel.ForEach(teams, options, team =>
+                {
                     CreateSubscriptionAsync(team).Wait();
                 });
         }
         public static void DeleteDriveContent(int count)
         {
-            var counter = 4000;
-            var options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = Environment.ProcessorCount
-            };
+            var counter = 0;
             var teams = DbOperations.GetTeams(count)
-                .Skip(counter).Take(2005).ToList();
+                .Skip(counter).Take(count).ToList();
             Parallel.ForEach(teams, options, team =>
             {
                 DeleteDriveContentAsync(team).Wait();
                 Console.WriteLine(counter++);
             });
         }
-        public static void CreateGeneralFolder(int count)
+        public static void CreateGeneralFolder(int skip, int count)
         {
-            var options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = Environment.ProcessorCount
-            };
-            var teams = DbOperations.GetTeams(count)
+
+            var teams = DbOperations.GetTeams(count + skip).Skip(skip).Take(count)
                 .ToList();
 
             Parallel.ForEach(teams, options, team =>
@@ -210,7 +210,7 @@ namespace GraphApi.Services
                 .GetAsync();
 
             var filtered = subscriptions.CurrentPage.Where(w =>
-                        w.ClientState == ClientState);
+                        w.NotificationUrl == NotificationUrl);
 
             DeleteSubscriptions(filtered);
 
@@ -224,21 +224,30 @@ namespace GraphApi.Services
                     .GetAsync();
 
                 filtered = subscriptions.CurrentPage.Where(w =>
-                        w.ClientState == ClientState);
+                        w.NotificationUrl == NotificationUrl);
 
                 DeleteSubscriptions(filtered);
             }
-
         }
 
         private static void DeleteSubscriptions(IEnumerable<Microsoft.Graph.Subscription> Subscriptions)
         {
-            Subscriptions.ToList().ForEach(subscription => {
-                var response=graphClient.Subscriptions[subscription.Id]
-                .Request()
-                .DeleteAsync();
-                DbOperations.DeleteSubscription(subscription.Id);
-            });
+            try
+            {
+                Subscriptions.ToList().ForEach(subscription =>
+                {
+                    graphClient.Subscriptions[subscription.Id]
+                    .Request()
+                    .DeleteAsync().Wait();
+                    DbOperations.DeleteSubscription(subscription.Id);
+                    Console.WriteLine($"{subscription.Resource} Deleted");
+                });
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+            }
         }
 
         private static void AddTeamsToTable(IEnumerable<Group> teams)
@@ -316,7 +325,7 @@ namespace GraphApi.Services
         }
         private static async Task CreateSubscriptionAsync(Teams team)
         {
-            if (DbOperations.IsSubscriptionCreatedForTeam(team.TeamId))
+            if (DbOperations.IsGraphSubscriptionCreatedForTeam(team.TeamId))
                 return;
             var url = "https://graph.microsoft.com/beta/subscriptions";
             SubscriptionPostGraph post = new SubscriptionPostGraph()
