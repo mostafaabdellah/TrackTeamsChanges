@@ -14,6 +14,8 @@ namespace TrackTeamsChanges
         public DbSet<SPWebhookNotification> SPWebhookNotifications { get; set; }
         public DbSet<Change> Changes { get; set; }
         public DbSet<LogInfo> LogInfo { get; set; }
+        public DbSet<RemoteEventReceiver> RemoteEventReceivers { get; set; }
+        public DbSet<SPRemoteEvent> SPRemoteEvents { get; set; }
 
         public DbCtxt():base(@"Server=CSMM1\WIN19SQL17CI;Database=TrackTeamsChanges;Trusted_Connection=True;")
         {

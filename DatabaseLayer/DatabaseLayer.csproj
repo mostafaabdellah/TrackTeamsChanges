@@ -58,8 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Change.cs" />
+    <Compile Include="Classes\RemoteEventReceiver.cs" />
+    <Compile Include="Classes\SPRemoteEvent.cs" />
     <Compile Include="Classes\SPWebhookContent.cs" />
     <Compile Include="Classes\SPWebhookNotification.cs" />
+    <Compile Include="Classes\SubscriptionGraph.cs" />
     <Compile Include="Classes\SubscriptionPost.cs" />
     <Compile Include="Classes\Subscription.cs" />
     <Compile Include="Classes\Teams.cs" />
@@ -101,6 +104,14 @@
     <Compile Include="Migrations\202107142218058_changeSchema4.designer.cs">
       <DependentUpon>202107142218058_changeSchema4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107221610343_schema5.cs" />
+    <Compile Include="Migrations\202107221610343_schema5.designer.cs">
+      <DependentUpon>202107221610343_schema5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107221743411_SPRemoteEvents.cs" />
+    <Compile Include="Migrations\202107221743411_SPRemoteEvents.designer.cs">
+      <DependentUpon>202107221743411_SPRemoteEvents.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -135,6 +146,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107142218058_changeSchema4.resx">
       <DependentUpon>202107142218058_changeSchema4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107221610343_schema5.resx">
+      <DependentUpon>202107221610343_schema5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107221743411_SPRemoteEvents.resx">
+      <DependentUpon>202107221743411_SPRemoteEvents.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -159,5 +159,23 @@ namespace TrackTeamsChanges
                 context.SaveChanges();
             }
         }
+
+        public static void AddRemoteEventReceiver(RemoteEventReceiver rer)
+        {
+            using (var context = new DbCtxt())
+            {
+                context.RemoteEventReceivers.Add(rer);
+                context.SaveChanges();
+            }
+        }
+
+        public static void AddRemoteEvent(SPRemoteEvent re)
+        {
+            using (var context = new DbCtxt())
+            {
+                context.SPRemoteEvents.Add(re);
+                context.SaveChanges();
+            }
+        }
     }
 }
