@@ -2,32 +2,39 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-public class SPRemoteEvent
+public class RemoteEvent
 {
     [Key]
     public long Id { get; set; }
-    public SPRemoteEventType EventType { get; set; }
-    public SPRemoteItemEventProperties ItemEventProperties { get; set; }
-}
-public class SPRemoteItemEventProperties
-{
+    public int EventType { get; set; }
     public string WebUrl { get; set; }
-    public Guid ListId { get; set; }
+    public string ListId { get; set; }
     public string ListTitle { get; set; }
-    public int ListItemId { get; set; }
-    public bool Versionless { get; set; }
+    public int? ListItemId { get; set; }
+    public bool? Versionless { get; set; }
     public string UserDisplayName { get; set; }
     public string UserLoginName { get; set; }
-    public bool IsBackgroundSave { get; set; }
-    public int CurrentUserId { get; set; }
+    public bool? IsBackgroundSave { get; set; }
+    public int? CurrentUserId { get; set; }
     public string BeforeUrl { get; set; }
     public string AfterUrl { get; set; }
-    public byte[] ExternalNotificationMessage { get; set; }
-    public Dictionary<string, object> BeforeProperties { get; set; }
-    public Dictionary<string, object> AfterProperties { get; set; }
+    public string BeforeProperties { get; set; }
+    public string AfterProperties { get; set; }
+    public bool? Processed { get; set; }
 }
 
-public enum SPRemoteEventType
+public class RemoteEvents
+{
+    [Key]
+    public int Id { get; set; }
+    public int? EventType { get; set; }
+    public string WebUrl { get; set; }
+    public string ListId { get; set; }
+    public int? ListItemId { get; set; }
+}
+
+
+public enum RemoteEventType
 {
     ItemAdding = 1,
     ItemUpdating = 2,

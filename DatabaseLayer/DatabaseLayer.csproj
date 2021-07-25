@@ -15,6 +15,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -112,6 +113,42 @@
     <Compile Include="Migrations\202107221743411_SPRemoteEvents.designer.cs">
       <DependentUpon>202107221743411_SPRemoteEvents.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107221839584_SPRemoteEvents1.cs" />
+    <Compile Include="Migrations\202107221839584_SPRemoteEvents1.designer.cs">
+      <DependentUpon>202107221839584_SPRemoteEvents1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107222015501_SPRemoteEvents2.cs" />
+    <Compile Include="Migrations\202107222015501_SPRemoteEvents2.designer.cs">
+      <DependentUpon>202107222015501_SPRemoteEvents2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107222021382_SPRemoteEvents3.cs" />
+    <Compile Include="Migrations\202107222021382_SPRemoteEvents3.designer.cs">
+      <DependentUpon>202107222021382_SPRemoteEvents3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107222030389_SPRemoteEvents4.cs" />
+    <Compile Include="Migrations\202107222030389_SPRemoteEvents4.designer.cs">
+      <DependentUpon>202107222030389_SPRemoteEvents4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107222103394_SPRemoteEvents5.cs" />
+    <Compile Include="Migrations\202107222103394_SPRemoteEvents5.designer.cs">
+      <DependentUpon>202107222103394_SPRemoteEvents5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107222116581_SPRemoteEvents6.cs" />
+    <Compile Include="Migrations\202107222116581_SPRemoteEvents6.designer.cs">
+      <DependentUpon>202107222116581_SPRemoteEvents6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107222129435_SPRemoteEvents7.cs" />
+    <Compile Include="Migrations\202107222129435_SPRemoteEvents7.designer.cs">
+      <DependentUpon>202107222129435_SPRemoteEvents7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107232138067_SPRemoteEvents8.cs" />
+    <Compile Include="Migrations\202107232138067_SPRemoteEvents8.designer.cs">
+      <DependentUpon>202107232138067_SPRemoteEvents8.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107232141250_SPRemoteEvents81.cs" />
+    <Compile Include="Migrations\202107232141250_SPRemoteEvents81.designer.cs">
+      <DependentUpon>202107232141250_SPRemoteEvents81.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -152,6 +189,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107221743411_SPRemoteEvents.resx">
       <DependentUpon>202107221743411_SPRemoteEvents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107221839584_SPRemoteEvents1.resx">
+      <DependentUpon>202107221839584_SPRemoteEvents1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107222015501_SPRemoteEvents2.resx">
+      <DependentUpon>202107222015501_SPRemoteEvents2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107222021382_SPRemoteEvents3.resx">
+      <DependentUpon>202107222021382_SPRemoteEvents3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107222030389_SPRemoteEvents4.resx">
+      <DependentUpon>202107222030389_SPRemoteEvents4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107222103394_SPRemoteEvents5.resx">
+      <DependentUpon>202107222103394_SPRemoteEvents5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107222116581_SPRemoteEvents6.resx">
+      <DependentUpon>202107222116581_SPRemoteEvents6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107222129435_SPRemoteEvents7.resx">
+      <DependentUpon>202107222129435_SPRemoteEvents7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107232138067_SPRemoteEvents8.resx">
+      <DependentUpon>202107232138067_SPRemoteEvents8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107232141250_SPRemoteEvents81.resx">
+      <DependentUpon>202107232141250_SPRemoteEvents81.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 public class RemoteEventReceiver
 {
     [Key]
+    public int Id { get; set; }
     [JsonProperty("ReceiverId")]
     public string ReceiverId { get; set; }
     public string TeamId { get; set; }

@@ -169,11 +169,11 @@ namespace TrackTeamsChanges
             }
         }
 
-        public static void AddRemoteEvent(SPRemoteEvent re)
+        public static void AddRemoteEvent(RemoteEvent re)
         {
             using (var context = new DbCtxt())
             {
-                context.SPRemoteEvents.Add(re);
+                context.RemoteEvents.Add(re);
                 context.SaveChanges();
             }
         }
