@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using TrackTeamsChanges;
 
 namespace ProcessChanges
 {
@@ -72,14 +74,68 @@ namespace ProcessChanges
             {
                 Console.WriteLine("The above notification query is not valid.");
             }
-            else
+            else 
             {
                 Console.WriteLine("Notification Info: " + eventArgs.Info);
-                Console.WriteLine("Notification source: " + eventArgs.Source);
-                Console.WriteLine("Notification type: " + eventArgs.Type);
+                if (eventArgs.Info == SqlNotificationInfo.Insert)
+                    HandleNewEvent();
             }
             ConfigureDependencyUsingTextQueryAndDefaultQueue();
         }
 
+        private void HandleNewEvent()
+        {
+            var events = DbOperations.GetLatestEvents();
+            events.ToList().ForEach(e=> 
+            {
+                ProcessEvent(e);
+            });
+        }
+
+        private void ProcessEvent(RemoteEvent e)
+        {
+            switch ((RemoteEventType)e.EventType)
+            {
+                case RemoteEventType.ItemAdded:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"New Item Added {e.WebUrl}/{e.AfterUrl}");
+                    break;
+                case RemoteEventType.ItemUpdated:
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    if (e.BeforeUrl != e.AfterUrl)
+                        Console.WriteLine($"Item Renamed {e.WebUrl} from {e.BeforeUrl} to {e.AfterUrl}");
+                    else if (IsContentChanged(e))
+                        Console.WriteLine($"Content Changed {e.WebUrl}/{e.BeforeUrl}");
+                    else 
+                        Console.WriteLine($"Item Updated {e.WebUrl}/{e.BeforeUrl}");
+                    break;
+                case RemoteEventType.ItemDeleted:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Item Deleted {e.WebUrl}/{e.BeforeUrl}");
+                    break;
+                case RemoteEventType.ItemCheckedIn:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"Item CheckedIn {e.WebUrl}/{e.AfterUrl}");
+                    break;
+                case RemoteEventType.ItemCheckedOut:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine($"Item CheckedOut {e.WebUrl}/{e.AfterUrl}");
+                    break;
+                case RemoteEventType.ItemUncheckedOut:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"Item UncheckedOut {e.WebUrl}/{e.AfterUrl}");
+                    break;
+                case RemoteEventType.ItemFileMoved:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine($"Item Moved from {e.WebUrl}/{e.BeforeUrl} to {e.WebUrl}/{e.AfterUrl}");
+                    break;
+            }
+        }
+
+        private bool IsContentChanged(RemoteEvent e)
+        {
+            return false;
+            //JsonConvert.de
+        }
     }
 }

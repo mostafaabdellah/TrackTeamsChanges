@@ -121,6 +121,21 @@ namespace TrackTeamsChanges
                 context.SaveChanges();
             }
         }
+
+        public static IList<RemoteEvent> GetLatestEvents()
+        {
+            using (var context = new DbCtxt())
+            {
+
+                var items=context.RemoteEvents.Where(w => w.Processed == null).ToList();
+                items.ForEach(i => {
+                    i.Processed = true;
+                });
+                context.SaveChanges();
+                return items;
+            }
+        }
+
         public static IList<Teams> GetTeams(int limit)
         {
             using (var context = new DbCtxt())
