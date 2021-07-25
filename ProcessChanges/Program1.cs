@@ -4,19 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestApi
+namespace ProcessChanges
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Operations.CreateTeamsRERs(0,1);
-            //Operations.CreateSubscriptions(0,1);
-            //Operations.DeleteSubscriptions(6666);
-            Console.WriteLine("Job Completed Exit!");
+            var op = new Operations();
+            op.StartSqlDependency();
             Console.ReadLine();
         }
-
-        
     }
 }

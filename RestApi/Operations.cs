@@ -18,9 +18,9 @@ namespace RestApi
     public static class Operations
     {
         private const string ClientState = "A0A354EC-97D4-4D83-9DDB-144077ADB449";
-        private const string NotificationUrl = "https://0284f0573ffb.ngrok.io/api/spwebhook/handlerequest";
+        private const string NotificationUrl = "https://37e7ff8be135.ngrok.io/api/spwebhook/handlerequest";
         private const string Tenant = "mmoustafa";
-        private const string RERNotificationUrl = "https://e86b799a15f1.ngrok.io/Services/AppEventReceiver.svc";
+        private const string RERNotificationUrl = "https://37e7ff8be135.ngrok.io/Services/AppEventReceiver.svc";
         private static string AccessToken = string.Empty;
         readonly static ParallelOptions options = new ParallelOptions()
         {

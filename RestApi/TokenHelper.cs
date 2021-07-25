@@ -372,7 +372,7 @@ namespace RestApi
         /// </summary>
         /// <param name="properties">Properties of a remote event receiver</param>
         /// <returns>A ClientContext ready to call the web where the event originated</returns>
-        public static ClientContext CreateRemoteEventReceiverClientContext(RemoteEvent properties)
+        public static ClientContext CreateRemoteEventReceiverClientContext(SPRemoteEventProperties properties)
         {
             Uri sharepointUrl;
             if (properties.ListEventProperties != null)
@@ -406,7 +406,7 @@ namespace RestApi
         /// <param name="properties">Properties of an add-in event</param>
         /// <param name="useAppWeb">True to target the app web, false to target the host web</param>
         /// <returns>A ClientContext ready to call the app web or the parent web</returns>
-        public static ClientContext CreateAppEventClientContext(RemoteEvent properties, bool useAppWeb)
+        public static ClientContext CreateAppEventClientContext(SPRemoteEventProperties properties, bool useAppWeb)
         {
             if (properties.AppEventProperties == null)
             {
@@ -727,7 +727,7 @@ namespace RestApi
 
         #region private methods
 
-        private static ClientContext CreateAcsClientContextForUrl(RemoteEvent properties, Uri sharepointUrl)
+        private static ClientContext CreateAcsClientContextForUrl(SPRemoteEventProperties properties, Uri sharepointUrl)
         {
             string contextTokenString = properties.ContextToken;
 

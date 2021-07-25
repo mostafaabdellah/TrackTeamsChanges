@@ -18,7 +18,7 @@ namespace TrackTeamsChanges
         public DbSet<RemoteEvent> RemoteEvents { get; set; }
         //public DbSet<REREvent> REREvents { get; set; }
 
-        public DbCtxt():base(@"Server=CSMM1\WIN19SQL17CI;Database=TrackTeamsChangesDemo;Trusted_Connection=True;")
+        public DbCtxt():base("name=TrackTeamsChanges")
         {
             _ =
                 System.Data.Entity.SqlServer.SqlProviderServices.Instance;
