@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,6 +12,7 @@ namespace ProcessChanges
     public class Operations
     {
         public static string sampleConnectionString= ConfigurationManager.ConnectionStrings["TrackTeamsChanges"].ConnectionString;
+        public static bool ShowDetails = Convert.ToBoolean(ConfigurationManager.AppSettings["ShowDetails"]);
         private SqlDependency sampleSqlDependency;
         private SqlCommand sampleSqlCommand;
         private SqlConnection sampleSqlConnection;
@@ -76,7 +79,7 @@ namespace ProcessChanges
             }
             else 
             {
-                Console.WriteLine("Notification Info: " + eventArgs.Info);
+                //Console.WriteLine("Notification Info: " + eventArgs.Info);
                 if (eventArgs.Info == SqlNotificationInfo.Insert)
                     HandleNewEvent();
             }
@@ -101,13 +104,13 @@ namespace ProcessChanges
                     Console.WriteLine($"New Item Added {e.WebUrl}/{e.AfterUrl}");
                     break;
                 case RemoteEventType.ItemUpdated:
-                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Console.ForegroundColor = ConsoleColor.White;
                     if (e.BeforeUrl != e.AfterUrl)
                         Console.WriteLine($"Item Renamed {e.WebUrl} from {e.BeforeUrl} to {e.AfterUrl}");
                     else if (IsContentChanged(e))
                         Console.WriteLine($"Content Changed {e.WebUrl}/{e.BeforeUrl}");
-                    else 
-                        Console.WriteLine($"Item Updated {e.WebUrl}/{e.BeforeUrl}");
+                    //else 
+                    //    Console.WriteLine($"Item Updated {e.WebUrl}/{e.BeforeUrl}");
                     break;
                 case RemoteEventType.ItemDeleted:
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -127,15 +130,33 @@ namespace ProcessChanges
                     break;
                 case RemoteEventType.ItemFileMoved:
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine($"Item Moved from {e.WebUrl}/{e.BeforeUrl} to {e.WebUrl}/{e.AfterUrl}");
+                    Console.WriteLine($"Item Moved from {e.WebUrl}/{e.BeforeUrl} to {e.AfterUrl}");
                     break;
+            }
+            if(ShowDetails)
+            {
+                Console.WriteLine($"\nWebUrl={e.WebUrl}\n");
+                Console.WriteLine($"EventType={(RemoteEventType)e.EventType}\n");
+                Console.WriteLine($"ListId={e.ListId}\n");
+                Console.WriteLine($"ListItemId={e.ListItemId}\n");
+                Console.WriteLine($"UserLoginName={e.UserLoginName}\n");
+                Console.WriteLine($"BeforeUrl={e.BeforeUrl}\n");
+                Console.WriteLine($"AfterUrl={e.AfterUrl}\n");
+                Console.WriteLine($"BeforeProperties={e.BeforeProperties}\n");
+                Console.WriteLine($"AfterProperties={e.AfterProperties}\n");
+                Console.WriteLine($"----------------------------------------------\n");
             }
         }
 
         private bool IsContentChanged(RemoteEvent e)
         {
+            var before= JsonConvert.DeserializeObject<Dictionary<string, string>>(e.BeforeProperties);
+            var after = JsonConvert.DeserializeObject<Dictionary<string, string>>(e.AfterProperties);
+            if (before["vti_writevalidationtoken"] == "AAAAAAAAAAAAAAAAAAAAAAAAAAA=")
+                return false;
+            if (before["vti_writevalidationtoken"] != after["vti_writevalidationtoken"])
+                return true;
             return false;
-            //JsonConvert.de
         }
     }
 }

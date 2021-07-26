@@ -12,6 +12,7 @@ namespace ProcessChanges
         {
             var op = new Operations();
             op.StartSqlDependency();
+            Console.WriteLine("Start listening to events...");
             Console.ReadLine();
         }
     }
