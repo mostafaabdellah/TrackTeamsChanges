@@ -67,6 +67,7 @@
     <Compile Include="Classes\SubscriptionPost.cs" />
     <Compile Include="Classes\Subscription.cs" />
     <Compile Include="Classes\Teams.cs" />
+    <Compile Include="Classes\TeamsNotification.cs" />
     <Compile Include="Database\DbContext.cs" />
     <Compile Include="Database\DbOperations.cs" />
     <Compile Include="Migrations\202107111736569_ChangeTeamsSchema1.1.cs" />

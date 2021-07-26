@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.IO;
 using System.Threading;
+using System.Configuration;
 
 namespace GraphApi.Services
 {
@@ -19,7 +20,8 @@ namespace GraphApi.Services
     {
         private const string ClientState = "A0A354EC-97D4-4D83-9DDB-144077ADB449";
         private static string AccessToken = string.Empty;
-        private const string NotificationUrl = "https://0284f0573ffb.ngrok.io/api/graphwebhook/handlerequest";
+        private static string WebhookUrl = ConfigurationManager.AppSettings["WebhookUrl"];
+        private static string TeamsWebhookUrl = ConfigurationManager.AppSettings["TeamsWebhookUrl"];
 
         readonly static DeviceCodeAuthProvider authProvider = new DeviceCodeAuthProvider();
         readonly static GraphServiceClient graphClient = new GraphServiceClient(authProvider);
@@ -210,7 +212,7 @@ namespace GraphApi.Services
                 .GetAsync();
 
             var filtered = subscriptions.CurrentPage.Where(w =>
-                        w.NotificationUrl == NotificationUrl);
+                        w.NotificationUrl == WebhookUrl);
 
             DeleteSubscriptions(filtered);
 
@@ -224,7 +226,7 @@ namespace GraphApi.Services
                     .GetAsync();
 
                 filtered = subscriptions.CurrentPage.Where(w =>
-                        w.NotificationUrl == NotificationUrl);
+                        w.NotificationUrl == WebhookUrl);
 
                 DeleteSubscriptions(filtered);
             }
@@ -302,7 +304,7 @@ namespace GraphApi.Services
                     Resource = $"/drives/{team.DriveId}/root",
                     ChangeType = "updated",
                     ExpirationDateTime = dateTime.ToUniversalTime(),
-                    NotificationUrl = NotificationUrl
+                    NotificationUrl = WebhookUrl
                 }).Result;
 
                 Console.WriteLine($"{team.SiteUrl} Added - subscription.Id {subscription.Id}");
@@ -331,7 +333,7 @@ namespace GraphApi.Services
             SubscriptionPostGraph post = new SubscriptionPostGraph()
             {
                 Resource = $"/drives/{team.DriveId}/root",
-                NotificationUrl = NotificationUrl,
+                NotificationUrl = WebhookUrl,
                 ClientState = ClientState,
                 ExpirationDateTime="2021-08-05T11:00:00.0000000Z"
             };
@@ -379,6 +381,46 @@ namespace GraphApi.Services
                     await CreateSubscriptionAsync(team);
                     Console.WriteLine("retry successed");
                 }
+            }
+
+        }
+
+        public static async Task CreateTeamsSubscriptionAsync()
+        {
+            AccessToken = authProvider.GetAccessToken().Result;
+            var url = "https://graph.microsoft.com/beta/subscriptions";
+            SubscriptionPostGraph post = new SubscriptionPostGraph()
+            {
+                Resource = $"groups",
+                NotificationUrl = TeamsWebhookUrl,
+                ClientState = ClientState,
+                ExpirationDateTime = "2021-08-05T11:00:00.0000000Z"
+            };
+
+            var payload = JsonConvert.SerializeObject(post, new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                },
+                Formatting = Formatting.Indented
+            });
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            HttpContent content = new StringContent(payload, Encoding.UTF8, "application/json");
+            HttpResponseMessage result = await client.PostAsync(url, content);
+            var resultContent = result.Content.ReadAsStringAsync().Result;
+            if (result.IsSuccessStatusCode)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Subscription Created \n {resultContent}");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(resultContent);
+                Console.ForegroundColor = ConsoleColor.Gray;
             }
 
         }

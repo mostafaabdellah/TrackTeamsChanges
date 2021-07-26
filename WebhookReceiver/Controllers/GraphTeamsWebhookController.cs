@@ -13,7 +13,7 @@ using TrackTeamsChanges;
 using WebhookReceiver.Models;
 namespace WebhookReceiver.Controllers
 {
-    public class GraphWebhookController : ApiController
+    public class GraphTeamsWebhookController : ApiController
     {
         [HttpPost]
         public HttpResponseMessage HandleRequest()
@@ -34,16 +34,6 @@ namespace WebhookReceiver.Controllers
             }
 
             var responseContent = Request.Content.ReadAsStringAsync().Result;
-            //var traceWriter = Configuration.Services.GetTraceWriter();
-            //traceWriter.Trace(Request, "GraphWebhooks", TraceLevel.Info, string.Format("Notification Response={0}", responseContent));
-            Task.Factory.StartNew(() =>
-            {
-                DbOperations.AddLog(new LogInfo() 
-                {
-                    CreatedOn=DateTime.UtcNow,
-                    ResponseContent=responseContent
-                });
-            });
 
             if (string.IsNullOrEmpty(responseContent))
                 return httpResponse;
@@ -52,14 +42,26 @@ namespace WebhookReceiver.Controllers
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var objNotification = JsonConvert.DeserializeObject<SPWebhookContent>(responseContent);
-                    var notifications = objNotification.Value;
-                    notifications.ForEach(notification =>
+                    DbOperations.AddLog(new LogInfo()
                     {
-                        notification.NotificationDate = currentDatetime;
-                        notification.Content = responseContent;
-                        DbOperations.AddNotifications(notification);
+                        CreatedOn = DateTime.UtcNow,
+                        ResponseContent = responseContent
                     });
+
+                    //var objNotification = JsonConvert.DeserializeObject<TeamsContent>(responseContent);
+                    //var notifications = objNotification.value;
+                    //notifications.ForEach(notification =>
+                    //{
+                    var idIndx = responseContent.IndexOf("\"id\"");
+                    var teamId = responseContent.Substring(idIndx + 6, 36);
+                        var teams = new List<Teams>();
+                        teams.Add(new Teams()
+                        {
+                            TeamId = teamId,
+                            CreatedOn = DateTime.UtcNow
+                        });
+                        DbOperations.AddTeams(teams);
+                    //});
                 });
                 httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
                 return httpResponse;
@@ -70,7 +72,7 @@ namespace WebhookReceiver.Controllers
                 {
                     CreatedOn = DateTime.UtcNow,
                     ResponseContent = responseContent,
-                    Exception= ex.InnerException.ToString()
+                    Exception = ex.InnerException.ToString()
                 });
                 return httpResponse;
             }

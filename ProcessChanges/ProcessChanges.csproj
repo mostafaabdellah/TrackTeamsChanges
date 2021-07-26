@@ -53,12 +53,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DatabaseLayer\DatabaseLayer.csproj">
       <Project>{5f6c8662-33ba-4840-b457-f535e0b65293}</Project>
       <Name>DatabaseLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GraphApi\GraphApi.csproj">
+      <Project>{886d74f6-b052-42f6-9783-95079763aad9}</Project>
+      <Name>GraphApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

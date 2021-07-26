@@ -10,8 +10,10 @@ namespace ProcessChanges
     {
         static void Main(string[] args)
         {
-            var op = new Operations();
-            op.StartSqlDependency();
+            Console.WriteLine("Create Teams Subscription...");
+            //GraphApi.Services.Operations.CreateTeamsSubscriptionAsync().Wait();
+            var spOprations = new Operations();
+            spOprations.StartSqlDependency();
             Console.WriteLine("Start listening to events...");
             Console.ReadLine();
         }

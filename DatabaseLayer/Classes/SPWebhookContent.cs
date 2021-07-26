@@ -10,4 +10,9 @@ namespace WebhookReceiver.Models
     {
         public List<Subscription> Value { get; set; }
     }
+    public class TeamsContent
+    {
+        public List<TeamsNotification> value { get; set; }
+    }
+
 }
