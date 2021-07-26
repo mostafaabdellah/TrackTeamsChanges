@@ -54,12 +54,11 @@ namespace WebhookReceiver.Controllers
                     //{
                     var idIndx = responseContent.IndexOf("\"id\"");
                     var teamId = responseContent.Substring(idIndx + 6, 36);
-                        var teams = new List<Teams>();
-                        teams.Add(new Teams()
+                        var teams =new Teams()
                         {
                             TeamId = teamId,
                             CreatedOn = DateTime.UtcNow
-                        });
+                        };
                         DbOperations.AddTeams(teams);
                     //});
                 });

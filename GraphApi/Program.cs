@@ -16,7 +16,7 @@ namespace GraphApi
             //Operations.DeleteSubscriptions().Wait();
             //Operations.DeleteDriveContent(6666);
             //Operations.CreateGeneralFolder(1000,1000);
-            Operations.CreateSubscriptions(1, 1);
+            Operations.DeleteTeams(7000, 1);
             Console.WriteLine("Job Completed Exit!");
             Console.ReadLine();
         }

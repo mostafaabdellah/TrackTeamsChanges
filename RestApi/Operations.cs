@@ -20,7 +20,7 @@ namespace RestApi
     {
         private const string ClientState = "A0A354EC-97D4-4D83-9DDB-144077ADB449";
         private const string NotificationUrl = "https://37e7ff8be135.ngrok.io/api/spwebhook/handlerequest";
-        private const string Tenant = "mmoustafa";
+        private static string Tenant = ConfigurationManager.AppSettings["Tenant"];
         private static string RERNotificationUrl = ConfigurationManager.AppSettings["EventReceiverWebhook"];
         private static string AccessToken = string.Empty;
         readonly static ParallelOptions options = new ParallelOptions()
@@ -275,7 +275,7 @@ namespace RestApi
             {
                 var rer = JsonConvert.DeserializeObject<RemoteEventReceiver>(resultContent);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"RemoteEventReceiver {rer.ReceiverId} type {rer.EventType} Added to {siteUrl}");
+                Console.WriteLine($"RemoteEventReceiver {rer.ReceiverId} type {(RemoteEventType)rer.EventType} Added to {siteUrl}");
                 rer.TeamId = team.TeamId;
                 DbOperations.AddRemoteEventReceiver(rer);
             }

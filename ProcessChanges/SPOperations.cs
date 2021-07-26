@@ -129,8 +129,11 @@ namespace ProcessChanges
                     Console.WriteLine($"Item UncheckedOut {e.WebUrl}/{e.AfterUrl}");
                     break;
                 case RemoteEventType.ItemFileMoved:
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine($"Item Moved from {e.WebUrl}/{e.BeforeUrl} to {e.AfterUrl}");
+                    if (e.BeforeUrl.Split('/').Length != e.AfterUrl.Split('/').Length)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.WriteLine($"Item Moved from {e.WebUrl}/{e.BeforeUrl} to {e.AfterUrl}");
+                    }
                     break;
             }
             if(ShowDetails)

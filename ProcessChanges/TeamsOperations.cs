@@ -98,6 +98,7 @@ namespace ProcessChanges
         private void ProcessEvent(Teams e)
         {
             var team=GraphApi.Services.Operations.GetTeamsDetails(e.TeamId).Result;
+            if (team == null) return;
             Console.WriteLine($"\nNew Team Created {team.DisplayName} TeamId={e.TeamId}\n");
             DbOperations.UpdateTeams(team);
             for (int i = 1; i <= 10; i++)

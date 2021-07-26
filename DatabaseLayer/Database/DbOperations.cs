@@ -22,8 +22,12 @@ namespace TrackTeamsChanges
         {
             using (var context = new DbCtxt())
             {
-                context.Teams.Add(teams);
-                context.SaveChanges();
+                var find=context.Teams.Where(w => w.TeamId == teams.TeamId).FirstOrDefault();
+                if (find == null)
+                {
+                    context.Teams.Add(teams);
+                    context.SaveChanges();
+                }
             }
         }
         public static void AddSubscriptions(IList<Subscription> subscriptions)

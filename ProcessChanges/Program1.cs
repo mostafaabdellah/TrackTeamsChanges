@@ -12,8 +12,8 @@ namespace ProcessChanges
         {
             Console.WriteLine("Create Teams Subscription...");
             //GraphApi.Services.Operations.CreateTeamsSubscriptionAsync().Wait();
-            Console.WriteLine("Start listening to events...");
             var teamsOprations = new TeamsOperations();
+            Console.WriteLine("Start listening to events...");
             teamsOprations.StartSqlDependency();
             var spOprations = new SPOperations();
             spOprations.StartSqlDependency();

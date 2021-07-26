@@ -19,6 +19,20 @@ namespace GraphApi.Services
     public static class Operations
     {
         private const string ClientState = "A0A354EC-97D4-4D83-9DDB-144077ADB449";
+
+        internal static void DeleteTeams(int count, int skip)
+        {
+            AccessToken = authProvider.GetAccessToken().Result;
+            var teams = DbOperations.GetTeams(count + skip).Skip(skip).Take(count)
+                .ToList();
+            //teams.ForEach(team => {
+            Parallel.ForEach(teams, options, team =>
+            {
+                DeleteTeamsAsync(team).Wait();
+                Console.WriteLine($"{team.TeamId} Deleted" );
+            });
+        }
+
         private static string AccessToken = string.Empty;
         private static string WebhookUrl = ConfigurationManager.AppSettings["WebhookUrl"];
         private static string TeamsWebhookUrl = ConfigurationManager.AppSettings["TeamsWebhookUrl"];
@@ -383,6 +397,20 @@ namespace GraphApi.Services
                 }
             }
 
+        }
+        private static async Task DeleteTeamsAsync(Teams team)
+        {
+            try
+            {
+                await graphClient.Groups[team.TeamId]
+                                                .Request()
+                                                .DeleteAsync();
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public static async Task CreateTeamsSubscriptionAsync()
