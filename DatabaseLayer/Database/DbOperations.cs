@@ -122,6 +122,29 @@ namespace TrackTeamsChanges
             }
         }
 
+        public static void UpdateTeams(Teams team)
+        {
+            using (var context = new DbCtxt())
+            {
+                var t=context.Teams.Where(w => w.TeamId== team.TeamId).FirstOrDefault();
+                t.ListId = team.ListId;
+                t.SiteId = team.SiteId;
+                t.SiteUrl = team.SiteUrl;
+                t.DriveId = team.DriveId;
+                t.DisplayName = team.DisplayName;
+                t.CreatedOn = team.CreatedOn;
+                context.SaveChanges();
+            }
+        }
+
+        public static List<Teams> GetLatestTeams()
+        {
+            using (var context = new DbCtxt())
+            {
+                return context.Teams.Where(w => w.DriveId == null).ToList();
+            }
+        }
+
         public static IList<RemoteEvent> GetLatestEvents()
         {
             using (var context = new DbCtxt())

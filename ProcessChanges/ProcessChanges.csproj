@@ -47,7 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Operations.cs" />
+    <Compile Include="TeamsOperations.cs" />
+    <Compile Include="SPOperations.cs" />
     <Compile Include="Program1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -57,6 +58,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="setting.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DatabaseLayer\DatabaseLayer.csproj">
@@ -66,6 +70,10 @@
     <ProjectReference Include="..\GraphApi\GraphApi.csproj">
       <Project>{886d74f6-b052-42f6-9783-95079763aad9}</Project>
       <Name>GraphApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestApi\RestApi.csproj">
+      <Project>{5552f381-c991-45ce-a2d3-eef8f3c97b96}</Project>
+      <Name>RestApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

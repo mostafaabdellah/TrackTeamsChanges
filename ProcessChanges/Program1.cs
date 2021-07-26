@@ -12,9 +12,11 @@ namespace ProcessChanges
         {
             Console.WriteLine("Create Teams Subscription...");
             //GraphApi.Services.Operations.CreateTeamsSubscriptionAsync().Wait();
-            var spOprations = new Operations();
-            spOprations.StartSqlDependency();
             Console.WriteLine("Start listening to events...");
+            var teamsOprations = new TeamsOperations();
+            teamsOprations.StartSqlDependency();
+            var spOprations = new SPOperations();
+            spOprations.StartSqlDependency();
             Console.ReadLine();
         }
     }

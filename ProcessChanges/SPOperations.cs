@@ -9,7 +9,7 @@ using TrackTeamsChanges;
 
 namespace ProcessChanges
 {
-    public class Operations
+    public class SPOperations
     {
         public static string sampleConnectionString= ConfigurationManager.ConnectionStrings["TrackTeamsChanges"].ConnectionString;
         public static bool ShowDetails = Convert.ToBoolean(ConfigurationManager.AppSettings["ShowDetails"]);
@@ -20,8 +20,8 @@ namespace ProcessChanges
 
         public void StartSqlDependency()
         {
-            SqlDependency.Stop(sampleConnectionString);
-            SqlDependency.Start(sampleConnectionString);
+            //SqlDependency.Stop(sampleConnectionString);
+            //SqlDependency.Start(sampleConnectionString);
             notificationQuery = "SELECT [Id],[Processed] FROM [dbo].[RemoteEvents] where [Processed] is null;";
             ConfigureDependencyUsingTextQueryAndDefaultQueue();
         }

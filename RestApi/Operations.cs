@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,7 +21,7 @@ namespace RestApi
         private const string ClientState = "A0A354EC-97D4-4D83-9DDB-144077ADB449";
         private const string NotificationUrl = "https://37e7ff8be135.ngrok.io/api/spwebhook/handlerequest";
         private const string Tenant = "mmoustafa";
-        private const string RERNotificationUrl = "https://37e7ff8be135.ngrok.io/Services/AppEventReceiver.svc";
+        private static string RERNotificationUrl = ConfigurationManager.AppSettings["EventReceiverWebhook"];
         private static string AccessToken = string.Empty;
         readonly static ParallelOptions options = new ParallelOptions()
         {
@@ -251,6 +252,7 @@ namespace RestApi
 
         public static async Task CreateTeamsRER(Teams team,int EventType)
         {
+            AccessToken = GetSharePointAppToken();
             var siteUrl = team.SiteUrl.Replace("Shared%20Documents", "");
             var url = $"{siteUrl}_api/web/lists('{team.ListId}')/EventReceivers";
             EventReceiver post = new EventReceiver()

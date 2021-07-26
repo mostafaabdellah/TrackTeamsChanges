@@ -1,0 +1,9 @@
+{
+  "tenantId": "0d4ca527-dc44-43d1-84c1-b63d1b1e024d",
+  "clientId": "850e0eec-9575-48b0-9fd2-5d57f9948ad3",
+  "resourceId": "https://mmoustafa.sharepoint.com/",
+  "resourceUrl": "https://mmoustafa.sharepoint.com/sites/DataSite/_api/web?$select=Title",
+  "certficatePath": "C:\\SharePoint\\mmoustafa.onmicrosoft.com.pfx",
+  "certificatePassword": "Opentext1!"
+
+}

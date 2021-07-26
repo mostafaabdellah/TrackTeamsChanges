@@ -424,5 +424,37 @@ namespace GraphApi.Services
             }
 
         }
+        public static async Task<Teams> GetTeamsDetails(string teamId)
+        {
+            try
+            {
+                var teamTitle = await graphClient.Groups[teamId]
+                                        .Request()
+                                        .Select("DisplayName")
+                                        .GetAsync();
+                
+
+                var teamSite = await graphClient.Groups[teamId].Drive.Root
+                                        .Request()
+                                        .Select("SharepointIds,ParentReference,CreatedDateTime,WebUrl")
+                                        .GetAsync();
+                var team=new Teams()
+                {
+                    TeamId = teamId,
+                    DisplayName = teamTitle.DisplayName,
+                    CreatedOn = teamSite.CreatedDateTime.Value.UtcDateTime,
+                    DriveId = teamSite.ParentReference.DriveId,
+                    SiteUrl = teamSite.WebUrl,
+                    SiteId = teamSite.SharepointIds.SiteId,
+                    ListId = teamSite.SharepointIds.ListId,
+
+                };
+                return team;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }
